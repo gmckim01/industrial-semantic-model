@@ -1,0 +1,172 @@
+﻿CLASS,name,relationType,relatedTo,relationDescription
+PROTOTYPE,Mechanical Node,none,none,none
+COMPONENT,Bearing,inheritedFrom,Mechanical Node,none
+COMPONENT,Journal Bearing,inheritedFrom,Bearing,none
+COMPONENT,Journal Bearing,hasPossibleProblem,High Temperature,none
+COMPONENT,Journal Bearing,hasPossibleProblem,High Vibration,none
+COMPONENT,Journal Bearing,hasMeasurement,Vibration,none
+COMPONENT,Journal Bearing,hasMeasurement,Temperature,Metal
+COMPONENT,Journal Bearing,hasMeasurement,Temperature,Oil
+COMPONENT,Thrust Bearing,inheritedFrom,Journal Bearing,None
+COMPONENT,Motor,inheritedFrom,Electrical Node,none
+COMPONENT,Motor,inheritedFrom,Mechanical Node,none
+COMPONENT,Motor,hasMeasurement,Position,on/off
+COMPONENT,Shaft,inheritedFrom,Mechanical Node,none
+COMPONENT,Seal,inheritedFrom,Mechanical Node,none
+COMPONENT,Housing,inheritedFrom,Mechanical Node,none
+COMPONENT,Gearbox,inheritedFrom,Mechanical Node,none
+COMPONENT,Drive Coupling,inheritedFrom,Mechanical Node,none
+PROTOTYPE,Electrical Node,none,none,none
+PROTOTYPE,Pressure Node,none,none,none
+COMPONENT,Header,inheritedFrom,Pressure Node,none
+COMPONENT,Header,hasMeasurement,Pressure,none
+COMPONENT,Header,hasMeasurement,Temperature,none
+COMPONENT,Tank,inheritedFrom,Pressure Node,none
+COMPONENT,Tank,hasMeasurement,Position,Level
+COMPONENT,Tank,hasMeasurement,Temperature,none
+PROTOTYPE,Flow Node,none,none,none
+COMPONENT,Pipe,inheritedFrom,Flow Node,none
+COMPONENT,Valve,inheritedFrom,Flow Node,none
+COMPONENT,Control Valve,inheritedFrom,Valve,none
+COMPONENT,Control Valve,hasMeasurement,Position,none
+COMPONENT,Stop Valve,inheritedFrom,Valve,none
+COMPONENT,Stop Valve,hasMeasurement,Position,none
+COMPONENT,Control Valve,hasMeasurement,Temperature,Metal
+COMPONENT,Stop Valve,hasMeasurement,Temperature,Metal
+COMPONENT,Two-Sided Heat Exchanger,inheritedFrom,Flow Node,none
+COMPONENT,Two-Sided Heat Exchanger,hasMeasurement,Temperature,Side 1 Inlet
+COMPONENT,Two-Sided Heat Exchanger,hasMeasurement,Temperature,Side 1 Outlet
+COMPONENT,Two-Sided Heat Exchanger,hasMeasurement,Temperature,Side 2 Inlet
+COMPONENT,Two-Sided Heat Exchanger,hasMeasurement,Temperature,Side 2 Outlet
+COMPONENT,One-Sided Heat Exchanger,inheritedFrom,Flow Node,none
+COMPONENT,One-Sided Heat Exchanger,hasMeasurement,Temperature,Inlet
+COMPONENT,One-Sided Heat Exchanger,hasMeasurement,Temperature,Outlet
+COMPONENT,Pump,inheritedFrom,Flow Node,none
+COMPONENT,Centrifigul Pump,inheritedFrom,Pump,none
+COMPONENT,Centrifigul Pump,hasMeasurement,Pressure,Suction
+COMPONENT,Centrifigul Pump,hasMeasurement,Pressure,Discharge
+MEASUREMENT,Pressure,none,none,none
+MEASUREMENT,Temperature,none,none,none
+MEASUREMENT,Flowrate,none,none,none
+MEASUREMENT,Speed,none,none,none
+MEASUREMENT,Position,none,none,none
+MEASUREMENT,Vibration,none,none,none
+MEASUREMENT,Voltage,none,none,none
+MEASUREMENT,Current,none,none,none
+MEASUREMENT,Position,none,none,none
+COMPONENT,Main Stop Valve,inheritedFrom,Stop Valve,none
+COMPONENT,Reheat Stop Valve,inheritedFrom,Stop Valve,none
+COMPONENT,Reheat Intercept Valve,inheritedFrom,Stop Valve,none
+COMPONENT,Main Control Valve,inheritedFrom,Control Valve,none
+COMPONENT,Turning Gear,inheritedFrom,Motor,none
+COMPONENT,Steam Turbine Rotor,inheritedFrom,Shaft,none
+COMPONENT,Steam Turbine Rotor,assembles,Journal Bearing,#2
+COMPONENT,Steam Turbine Rotor,assembles,Journal Bearing,#3
+COMPONENT,Steam Turbine Rotor,assembles,Journal Bearing,#4
+COMPONENT,Steam Turbine Rotor,assembles,Journal Bearing,#5
+COMPONENT,Steam Turbine Rotor,assembles,Journal Bearing,#6
+COMPONENT,Steam Turbine Rotor,assembles,Journal Bearing,#7
+COMPONENT,Steam Turbine Rotor,assembles,Thrust Bearing,#1
+COMPONENT,Steam Turbine Rotor,assembles,Turning Gear,Turning Gear
+COMPONENT,Steam Turbine Rotor,hasMeasurement,Position,Eccentricity
+COMPONENT,Steam Turbine Rotor,hasMeasurement,Speed,Rotor RPM
+COMPONENT,Stationary Blade,inheritedFrom,Mechanical Node,none
+COMPONENT,Rotating Blade,inheritedFrom,Mechanical Node,none
+COMPONENT,Turbine Casing,inheritedFrom,Housing,none
+COMPONENT,Turbine Casing,hasMeasurement,Temperature,none
+COMPONENT,Turbine Casing,hasMeasurement,Position,Differential Expansion
+COMPONENT,Drains,inheritedFrom,Housing,none
+COMPONENT,Turbine Stage,inheritedFrom,Flow Node,none
+COMPONENT,Turbine Stage,inheritedFrom,Stationary Blade,none
+COMPONENT,Turbine Stage,inheritedFrom,Rotating Blade,none
+COMPONENT,Turbine Stage,hasMeasurement,Pressure,none
+COMPONENT,Gland Seal,inheritedFrom,Seal,none
+COMPONENT,Gland Seal Steam Header,inheritedFrom,Header,none
+COMPONENT,Gland Steam Condenser,inheritedFrom,Header,none
+COMPONENT,Gland Steam Exhauster,inheritedFrom,Motor,none
+ASSET,Gland Steam System,assembles,Gland Seal Steam Header,none
+ASSET,Gland Steam System,assembles,Gland Steam Condenser,none
+ASSET,Gland Steam System,assembles,Gland Steam Exhauster,none
+COMPONENT,Main Steam,inheritedFrom,Header,none
+COMPONENT,Cold Reheat,inheritedFrom,Header,none
+COMPONENT,Hot Reheat,inheritedFrom,Header,none
+COMPONENT,Turbine Crossover,inheritedFrom,Header,none
+COMPONENT,Exhaust Hood,inheritedFrom,Header,none
+COMPONENT,HP Steam Turbine,assembles,Turbine Casing,none
+COMPONENT,HP Steam Turbine,assembles,Turbine Stage,#1 First Stage
+COMPONENT,HP Steam Turbine,hasMeasurement,Flowrate,Steam Flowrate
+COMPONENT,HP Steam Turbine,assembles,Turbine Stage,#2
+COMPONENT,HP Steam Turbine,assembles,Turbine Stage,#3
+COMPONENT,HP Steam Turbine,assembles,Gland Seal,Left
+COMPONENT,HP Steam Turbine,assembles,Gland Seal,Right
+COMPONENT,IP Steam Turbine,assembles,Turbine Casing,none
+COMPONENT,IP Steam Turbine,assembles,Turbine Stage,#4
+COMPONENT,IP Steam Turbine,assembles,Turbine Stage,#5
+COMPONENT,IP Steam Turbine,assembles,Turbine Stage,#6
+COMPONENT,IP Steam Turbine,assembles,Gland Seal,Left
+COMPONENT,IP Steam Turbine,assembles,Gland Seal,Right
+COMPONENT,LP Steam Turbine,assembles,Turbine Casing,none
+COMPONENT,LP Steam Turbine,assembles,Turbine Stage,#7
+COMPONENT,LP Steam Turbine,assembles,Turbine Stage,#8
+COMPONENT,LP Steam Turbine,assembles,Turbine Stage,#9
+COMPONENT,LP Steam Turbine,assembles,Gland Seal,Left
+COMPONENT,LP Steam Turbine,assembles,Gland Seal,Right
+COMPONENT,Steam Chest - Left,inheritedFrom,Header,none
+COMPONENT,Steam Chest - Right,inheritedFrom,Header,none
+COMPONENT,Steam Chest - Left,assembles,Stop Valve,#1
+COMPONENT,Steam Chest - Right,assembles,Stop Valve,#2
+COMPONENT,Steam Chest - Left,assembles,Control Valve,#1
+COMPONENT,Steam Chest - Left,assembles,Control Valve,#2
+COMPONENT,Steam Chest - Left,assembles,Control Valve,#3
+COMPONENT,Steam Chest - Left,assembles,Control Valve,#4
+COMPONENT,Steam Chest - Right,assembles,Control Valve,#5
+COMPONENT,Steam Chest - Right,assembles,Control Valve,#6
+COMPONENT,Steam Chest - Right,assembles,Control Valve,#7
+COMPONENT,Steam Chest - Right,assembles,Control Valve,#8
+COMPONENT,HP Steam Turbine,assembles,Steam Chest - Left,none
+COMPONENT,HP Steam Turbine,assembles,Steam Chest - Right,none
+COMPONENT,IP Steam Turbine,assembles,Stop Valve,#1
+COMPONENT,IP Steam Turbine,assembles,Stop Valve,#2
+COMPONENT,IP Steam Turbine,assembles,Reheat Intercept Valve,#1
+COMPONENT,IP Steam Turbine,assembles,Reheat Intercept Valve,#2
+COMPONENT,HP Steam Turbine,assembles,Main Steam,none
+COMPONENT,HP Steam Turbine,assembles,Cold Reheat,none
+COMPONENT,IP Steam Turbine,assembles,Hot Reheat,none
+COMPONENT,IP Steam Turbine,assembles,Turbine Crossover,none
+COMPONENT,LP Steam Turbine,assembles,Exhaust Hood,none
+COMPONENT,Vacuum Pump #1,inheritedFrom,Motor,none
+COMPONENT,Vacuum Pump #2,inheritedFrom,Motor,none
+COMPONENT,Steam Jet Air Ejector,inheritedFrom,Header,none
+COMPONENT,Vacuum Breaker,inheritedFrom,Stop Valve,none
+COMPONENT,Condenser Vacuum System,assembles,Vacuum Pump #1,none
+COMPONENT,Condenser Vacuum System,assembles,Vacuum Pump #2,none
+COMPONENT,Condenser Vacuum System,assembles,Steam Jet Air Ejector,none
+COMPONENT,Condenser Vacuum System,assembles,Vacuum Breaker,none
+COMPONENT,Condenser,inheritedFrom,Header,none
+COMPONENT,Condenser,inheritedFrom,Tank,none
+COMPONENT,Condenser Cooling Water,inheritedFrom,One-Sided Heat Exchanger,none
+COMPONENT,Condenser,assembles,Condenser Cooling Water,none
+COMPONENT,Condenser,assembles,Condenser Vacuum System,none
+COMPONENT,DC Lube Oil Pump,inheritedFrom,Motor,none
+COMPONENT,AC Lube Oil Pump,inheritedFrom,Motor,none
+COMPONENT,Turning Gear Oil Pump,inheritedFrom,Motor,none
+COMPONENT,Shaft Driven Oil Pump,inheritedFrom,Motor,none
+COMPONENT,Lube Oil Cooler,inheritedFrom,Two-Sided Heat Exchanger,none
+COMPONENT,Lube Oil Tank,inheritedFrom,Tank,none
+COMPONENT,Lube Oil Piping and Valves,inheritedFrom,Valve,none
+ASSET,Turbine Lube Oil System,assembles,DC Lube Oil Pump,none
+ASSET,Turbine Lube Oil System,assembles,AC Lube Oil Pump,none
+ASSET,Turbine Lube Oil System,assembles,Turning Gear Oil Pump,none
+ASSET,Turbine Lube Oil System,assembles,Shaft Driven Oil Pump,none
+ASSET,Turbine Lube Oil System,assembles,Lube Oil Cooler,#1
+ASSET,Turbine Lube Oil System,assembles,Lube Oil Cooler,#2
+ASSET,Turbine Lube Oil System,assembles,Lube Oil Tank,none
+ASSET,Turbine Lube Oil System,assembles,Lube Oil Piping and Valves,none
+ASSET,Main Steam Turbine,assembles,HP Steam Turbine,none
+ASSET,Main Steam Turbine,assembles,IP Steam Turbine,none
+ASSET,Main Steam Turbine,assembles,LP Steam Turbine,none
+ASSET,Main Steam Turbine,assembles,Drains,none
+ASSET,Main Steam Turbine,assembles,Steam Turbine Rotor,none
+ASSET,Main Steam Turbine,assembles,Turbine Lube Oil System,none
+ASSET,Main Steam Turbine,assembles,Gland Steam System,none
+ASSET,Main Steam Turbine,assembles,Condenser,none

@@ -1,0 +1,336 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf500
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red4\green41\blue57;\red0\green0\blue255;\red0\green0\blue0;
+\red251\green2\blue7;\red94\green94\blue95;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\cssrgb\c0\c21366\c28831;\cssrgb\c1680\c19835\c100000;\cssrgb\c0\c0\c0;
+\cssrgb\c100000\c14913\c0;\cssrgb\c44314\c44314\c44706;\cssrgb\c100000\c100000\c100000;}
+\margl1440\margr1440\vieww15960\viewh8500\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf2 match (n:SCHEMA) detach delete n\
+with count(*) as dummy\
+match (n:INSTANCE) detach delete n\
+with count(*) as dummy\cf3 \
+\
+// Load Temporary Asset Definitions\cf4 \
+\
+load csv with headers from "file:///steam_turbine_ontology.csv" as csvline\
+with csvline\
+merge (n:SCHEMA \{CLASS:csvline.CLASS, name:csvline.name\})\
+\
+with count(*) as dummy\
+\
+\cf3 // create the chain of inheritance, assembly, and measurement relationships\cf4 \
+\
+load csv with headers from "file:///steam_turbine_ontology.csv" as csvline\
+with csvline\
+match (n: SCHEMA) where csvline.relationType="inheritedFrom" and csvline.name=n.name\
+match (o: SCHEMA) where o.name=csvline.relatedTo\
+merge (n)-[:inheritedFrom \{description:csvline.relationDescription\}]->(o)\
+\
+with count(*) as dummy\
+\
+load csv with headers from "file:///steam_turbine_ontology.csv" as csvline\
+with csvline\
+match (n: SCHEMA) where csvline.relationType="assembles" and csvline.name=n.name\
+match (o: SCHEMA) where o.name=csvline.relatedTo\
+merge (n)-[:assembles \{description:csvline.relationDescription\}]->(o)\
+\
+with count(*) as dummy\
+\
+load csv with headers from "file:///steam_turbine_ontology.csv" as csvline\
+with csvline\
+match (n:SCHEMA) where csvline.relationType="hasMeasurement" and csvline.name=n.name\
+match (o:SCHEMA) where o.name=csvline.relatedTo and o.CLASS="MEASUREMENT"\
+merge (n)-[:hasMeasurement \{description:csvline.relationDescription\}]->(o)\
+\
+with count(*) as dummy\
+\
+load csv with headers from "file:///steam_turbine_ontology.csv" as csvline\
+with csvline\
+match (n: SCHEMA) where csvline.relationType="hasAttribute" and csvline.name=n.name\
+match (o: SCHEMA) where o.name=csvline.relatedTo and o.CLASS="ATTRIBUTE"\
+merge (n)-[:hasAttribute \{description:csvline.relationDescription\}]->(o)\
+\
+with count(*) as dummy\
+\
+load csv with headers from "file:///steam_turbine_ontology.csv" as csvline\
+with csvline\
+match (n: SCHEMA) where csvline.relationType="hasAttachPoint" and csvline.name=n.name\
+match (o: SCHEMA) where o.name=csvline.relatedTo and o.CLASS="ATTACH"\
+merge (n)-[:hasAttachPoint \{description:csvline.relationDescription\}]->(o)\
+\
+with count(*) as dummy\
+\
+load csv with headers from "file:///steam_turbine_ontology.csv" as csvline\
+with csvline\
+match (n: SCHEMA) where csvline.relationType="hasProperty" and csvline.name=n.name and n.CLASS="PROPERTY"\
+match (o: SCHEMA) where o.name=csvline.relatedTo and o.CLASS="PROPERTY"\
+merge (n)-[:hasProperty \{description:csvline.relationDescription\}]->(o)\
+\
+with count(*) as dummy\
+\
+\cf3 // blank-out the relationship descriptions that have "none" in them\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 \
+match (n)-[r]->(o) where r.description="none" set r.description=""\
+with count(*) as dummy\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf3 // inherit measurements, attributes, attach points, etc. from Parent objects\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 \
+match (n)-[:inheritedFrom*]->(o)-[r:assembles]->(p) merge (n)-[:assembles \{description:r.description\}]->(p)\
+with count(*) as dummy\
+match (n)-[:inheritedFrom*]->(o)-[r:hasMeasurement]->(p) merge (n)-[:hasMeasurement \{description:r.description\}]->(p)\
+with count(*) as dummy\
+match (n)-[:inheritedFrom*]->(o)-[r:hasAttachPoint]->(p) merge (n)-[:hasAttachPoint \{description:r.description\}]->(p)\
+with count(*) as dummy\
+match (n)-[:inheritedFrom*]->(o)-[r:hasAttribute]->(p) merge (n)-[:hasAttribute \{description:r.description\}]->(p)\
+with count(*) as dummy\
+match (n)-[:inheritedFrom*]->(o)-[r:hasProperty]->(p) merge (n)-[:hasProperty \{description:r.description\}]->(p)\
+\
+\
+with count(*) as dummy\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 // Now order all the nodes by depth of Level\cf4 \
+\
+match (n)\
+set n.Level=0\
+with n\
+match (n)-[r:assembles]->(o)\
+with n, r, o order by n.Level\
+set o.Level=n.Level+1\
+\
+with count(*) as dummy\
+\
+match (n)-[r:assembles]->(o) where o.Level <= n.Level\
+with n, r, o order by n.Level\
+set o.Level=n.Level+1\
+\
+with count(*) as dummy\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf3 // kludge!  Have to keep do this step a few times over to get all the levels covered (currently 3)\cf4 \
+\
+match (n)-[r:assembles]->(o) where o.Level <= n.Level\
+with n, r, o order by n.Level\
+set o.Level=n.Level+1\
+\
+with count(*) as dummy\
+\
+match (n)-[:inheritedFrom]->(o)\
+with n, o order by n.Level desc\
+match (o)-[r:assembles]->(p)\
+merge (n)-[s:assembles]->(p)\
+set s=r\
+with n, o\
+match (o)-[r:hasMeasurement]->(p)\
+merge (n)-[s:hasMeasurement]->(p)\
+set s=r\
+with n, o\
+match (o)-[r:hasAttribute]->(p)\
+merge (n)-[s:hasAttribute]->(p)\
+set s=r\
+with n, o\
+match (o)-[r:hasAttachPoint]->(p)\
+merge (n)-[s:hasAttachPoint]->(p)\
+set s=r\
+with n, o\
+match (o)-[r:hasProperty]->(p)\
+merge (n)-[s:hasProperty]->(p)\
+set s=r\
+\
+\
+with count(*) as dummy\
+\
+\cf3 // create instances\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 \
+match (n:SCHEMA)-[r:assembles]->(o:SCHEMA)\
+with n, r, o order by o.Level\
+merge (p:INSTANCE)-[:instanceOf]->(n)\
+create (q:INSTANCE)-[:instanceOf]->(o)\
+set p=n\
+set q=o\
+merge (p)-[s:assembles]->(q)\
+set s=r\
+\
+with count(*) as dummy\
+\
+match (n:INSTANCE)\
+with n\
+match (o:SCHEMA)-[r:hasMeasurement]->(p) where o.name=n.name\
+create (q:INSTANCE)-[:instanceOf]->(p)\
+set q=p\
+create (n)-[s:hasMeasurement]->(q)\
+set s=r\
+\
+with count(*) as dummy\
+\
+match (n:INSTANCE)\
+match (o:SCHEMA)-[r:hasAttribute]->(p) where o.name=n.name\
+create (q:INSTANCE)-[:instanceOf]->(p)\
+set q=p\
+create (n)-[s:hasAttribute]->(q)\
+set s=r\
+\
+with count(*) as dummy\
+\
+match (n:INSTANCE)\
+match (o:SCHEMA)-[r:hasAttachPoint]->(p) where o.name=n.name\
+create (q:INSTANCE)-[:instanceOf]->(p)\
+set q=p\
+create (n)-[s:hasAttachPoint]->(q)\
+set s=r\
+\
+with count(*) as dummy\
+\
+match (n:INSTANCE)\
+match (o:SCHEMA)-[r:hasProperty]->(p) where o.name=n.name\
+create (q:INSTANCE)-[:instanceOf]->(p)\
+set q=p\
+create (n)-[s:hasProperty]->(q)\
+set s=r\
+\
+with count(*) as dummy\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 // have to decide which is correct, for Attributes, AttachPoint, etc. \cf4 \
+\
+// match (n:SCHEMA)-[r:hasMeasurement]->(o:SCHEMA)\
+// merge (p:INSTANCE)-[:instanceOf]->(n)\
+// set p=n\
+// set p.Class=n.name\
+// with n, o, p, r\
+// create (q:INSTANCE)-[:instanceOf]->(o)\
+// set q=o\
+// set q.Class=o.name\
+// create (p)-[s:hasMeasurement]->(q)\
+// set s=r\
+\
+//with count(*) as dummy\
+\
+//match (n:SCHEMA)-[r:hasAttribute]->(o:SCHEMA)\
+//merge (p:INSTANCE)-[:instanceOf]->(n)\
+//set p=n\
+//set p.Class=n.name\
+//with n, o, p, r\
+//create (q:INSTANCE)-[:instanceOf]->(o)\
+//set q=o\
+//set q.Class=o.name\
+//create (p)-[s:hasAttribute]->(q)\
+//set s=r\
+\
+//with count(*) as dummy\
+\
+//match (n:SCHEMA)-[r:hasAttachPoint]->(o:SCHEMA)\
+//merge (p:INSTANCE)-[:instanceOf]->(n)\
+//set p=n\
+//set p.Class=n.name\
+//with n, o, p, r\
+//create (q:INSTANCE)-[:instanceOf]->(o)\
+//set q=o\
+//set q.Class=o.name\
+//create (p)-[s:hasAttachPoint]->(q)\
+//set s=r\
+\
+//with count(*) as dummy\
+\
+//match (n:SCHEMA)-[r:hasProperty]->(o:SCHEMA)\
+//merge (p:INSTANCE)-[:instanceOf]->(n)\
+//set p=n\
+//set p.Class=n.name\
+//with n, o, p, r\
+//create (q:INSTANCE)-[:instanceOf]->(o)\
+//set q=o\
+//set q.Class=o.name\
+//create (p)-[s:hasProperty]->(q)\
+//set s=r\
+\
+//with count(*) as dummy\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf3 // set the node name = adjective + node name\cf4 \
+\
+match (n:INSTANCE)\
+set n.description=n.name\
+with count(*) as dummy\
+match (n:INSTANCE)-[r]->(o:INSTANCE)\
+set o.description=r.description+" "+o.description\
+\
+with count(*) as dummy\
+\
+\cf3 // prune the tree of duplicates and merge results together into one big chain per major asset assembly\cf4 \
+\
+match (n:INSTANCE)\
+set n.MarkForDelete="FALSE"\
+with n\
+match (n)-[:assembles]->(o: INSTANCE)\
+with n, o\
+match (p: INSTANCE)-[:assembles]->(q:INSTANCE) where o.name=p.name and o.CLASS=p.CLASS\
+set p.MarkForDelete="TRUE"\
+create (o)-[:assembles]->(q)\
+\
+with count(*) as dummy\
+\
+match (n) where n.MarkForDelete="TRUE" detach delete n\
+\
+with count(*) as dummy\
+\
+\cf3 // assess the level of nodes:\cf4 \
+\
+match (n: INSTANCE)\
+set n.Level=0\
+with n\
+match (n: INSTANCE)-[r]->(o: INSTANCE)\
+set o.Level=n.Level+1\
+\
+with count(*) as dummy\
+\
+match (n: INSTANCE)-[r]->(o: INSTANCE) where o.Level <= n.Level\
+set o.Level=n.Level+1\
+\
+with count(*) as dummy\
+\
+\cf3 // same kludge as before\cf4 \
+\
+match (n: INSTANCE)-[r]->(o: INSTANCE) where o.Level <= n.Level\
+set o.Level=n.Level+1\
+\
+with count(*) as dummy\
+\
+\cf3 // concatenate the node names\cf4 \
+\
+match (n: INSTANCE)-[r]->(o: INSTANCE) where o.Level = n.Level+1\
+with n, o order by n.Level\
+set o.description=n.description+" "+o.description\
+\
+with count(*) as dummy\
+\
+match (n:INSTANCE) where n.CLASS="MEASUREMENT" set n:SENSOR\
+\
+with count(*) as dummy\
+\
+match (n:INSTANCE) return n\
+\
+\
+\
+\
+\
+\
+\pard\pardeftab720\sl420\partightenfactor0
+
+\f1\fs31\fsmilli15600 \cf6 \cb7 \expnd0\expndtw0\kerning0
+\
+
+\f0\fs24 \cf4 \cb1 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 \
+\pard\pardeftab720\sl420\partightenfactor0
+
+\f1\fs31\fsmilli15600 \cf6 \cb7 \expnd0\expndtw0\kerning0
+\
+\
+}
